@@ -1,12 +1,3 @@
-### Register and Validate the Raw Dataset
-'''
-This script loads the raw tourism dataset, validates that all required columns exist,
-prints useful summary information, and re-saves the dataset to ensure consistency
-for downstream pipeline steps.
-'''
-
-import pandas as pd
-import os
 
 # Path to the raw dataset inside the project structure.
 # Using a relative path ensures compatibility across Colab, GitHub Actions, and local machines.
