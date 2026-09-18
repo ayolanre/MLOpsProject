@@ -1,9 +1,3 @@
-### Streamlit Deployment App (`app.py`)
-'''
-This script loads the trained model, builds a Streamlit user interface,
-collects customer details, prepares them into a model‑ready format,
-and generates a prediction on whether the customer will purchase a travel package.
-'''
 
 import os
 import streamlit as st
