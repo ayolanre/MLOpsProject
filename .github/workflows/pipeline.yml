@@ -1,14 +1,3 @@
-### GitHub Actions CI/CD Pipeline (`pipeline.yml`)
-'''
-This workflow automates the entire MLOps pipeline:
-1. **Register Dataset**
-2. **Prepare Train/Test Splits**
-3. **Train Model + Log to MLflow**
-4. **Commit Trained Model Back to Repository**
-
-Each job runs in sequence and passes artifacts (dataset, splits, model) to the next stage.
-'''
-
 name: Tourism Project Pipeline
 
 on:
