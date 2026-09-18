@@ -1,0 +1,14 @@
+### Deployment Requirements File (`requirements.txt`)
+'''
+This file lists all Python dependencies needed to run the Streamlit deployment app.
+Pinning exact versions ensures consistent behavior across environments such as
+Colab, local machines, GitHub Actions, and cloud deployment platforms.
+'''
+
+pandas==2.2.2          # Data loading and manipulation
+numpy==1.26.4          # Numerical operations and array handling
+scikit-learn==1.6.0    # Preprocessing, pipelines, and ML utilities
+xgboost==2.1.4         # Gradient boosting model used for prediction
+joblib==1.5.1          # Saving and loading trained models
+mlflow==3.0.1          # Experiment tracking and model logging
+streamlit==1.43.2      # Web app framework for interactive model deployment
