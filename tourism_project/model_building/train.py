@@ -1,10 +1,3 @@
-### Model Training Script (`train.py`) with MLflow Tracking
-'''
-This script loads pre‑split training data, builds a preprocessing + XGBoost pipeline,
-performs hyperparameter tuning, logs all results to MLflow, and saves the best model
-for deployment. It is designed to run cleanly in Colab, locally, and inside GitHub Actions.
-'''
-
 # for data manipulation
 import os
 import pandas as pd
