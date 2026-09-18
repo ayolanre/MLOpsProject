@@ -1,12 +1,3 @@
-### Data Preparation: Train/Test Split
-'''
-This script loads the validated dataset, removes non‑predictive columns,
-splits the data into training and testing sets, and saves the resulting files
-for use in the model‑training pipeline.
-'''
-import os
-import pandas as pd
-from sklearn.model_selection import train_test_split
 
 # Path to the registered dataset.
 # Using a relative path ensures compatibility across Colab, GitHub Actions, and local machines.
