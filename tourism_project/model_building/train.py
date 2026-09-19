@@ -15,8 +15,9 @@ import xgboost as xgb
 import joblib
 import mlflow
 
-# GitHub Actions starts MLflow locally before running this script.
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+# GitHub Actions sets this value; the default supports local execution.
+tracking_uri = os.environ.get("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000")
+mlflow.set_tracking_uri(tracking_uri)
 mlflow.set_experiment("customer_purchase_prediction")
 
 required_files = ["Xtrain.csv", "Xtest.csv", "ytrain.csv", "ytest.csv"]
