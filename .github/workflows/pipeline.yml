@@ -1,4 +1,3 @@
-
 name: Tourism Project Pipeline
 
 on:
@@ -14,9 +13,9 @@ env:
   PYTHON_VERSION: "3.11"
   DATA_PATH: tourism_project/data/tourism.csv
   REQUIREMENTS_PATH: tourism_project/requirements.txt
+  MLFLOW_TRACKING_URI: http://127.0.0.1:5000
 
 jobs:
-  # ---------- JOB 1: Register Dataset ----------
   register-dataset:
     name: Register Dataset
     runs-on: ubuntu-latest
@@ -29,7 +28,9 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Dependencies
-        run: python -m pip install -r "$REQUIREMENTS_PATH"
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r "$REQUIREMENTS_PATH"
 
       - name: Register Dataset
         run: python tourism_project/model_building/data_register.py
@@ -39,8 +40,8 @@ jobs:
         with:
           name: registered-data
           path: tourism_project/data/tourism.csv
+          if-no-files-found: error
 
-  # ---------- JOB 2: Data Preparation ----------
   data-preparation:
     name: Data Preparation
     needs: register-dataset
@@ -54,7 +55,9 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Dependencies
-        run: python -m pip install -r "$REQUIREMENTS_PATH"
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r "$REQUIREMENTS_PATH"
 
       - name: Download Registered Dataset
         uses: actions/download-artifact@v4
@@ -77,8 +80,8 @@ jobs:
             Xtest.csv
             ytrain.csv
             ytest.csv
+          if-no-files-found: error
 
-  # ---------- JOB 3: Model Training ----------
   model-training:
     name: Model Training
     needs: data-preparation
@@ -92,27 +95,46 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Dependencies
-        run: python -m pip install -r "$REQUIREMENTS_PATH"
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r "$REQUIREMENTS_PATH"
 
       - name: Download Train/Test Splits
         uses: actions/download-artifact@v4
         with:
           name: data-splits
+          path: .
 
       - name: Start MLflow Server
         run: |
-          nohup mlflow ui --host 127.0.0.1 --port 5000 > mlflow.log 2>&1 &
-          for attempt in {1..12}; do
-            curl --fail --silent http://127.0.0.1:5000/health && break
-            sleep 5
+          set -euo pipefail
+          python -m mlflow server             --backend-store-uri sqlite:///mlflow.db             --default-artifact-root ./mlflow_artifacts             --host 127.0.0.1             --port 5000 > mlflow.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:5000/health; then
+              exit 0
+            fi
+            sleep 2
           done
-          curl --fail http://127.0.0.1:5000/health
+          cat mlflow.log
+          exit 1
 
       - name: Model Building
         run: python tourism_project/model_building/train.py
 
+      - name: Upload MLflow Tracking Data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-tracking
+          path: |
+            mlflow.db
+            mlflow_artifacts
+            mlflow.log
+          if-no-files-found: warn
+
       - name: Commit Trained Model
         run: |
+          test -f tourism_project/deployment/best_model_v1.pkl
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tourism_project/deployment/best_model_v1.pkl
