@@ -1,0 +1,9 @@
+pandas==2.2.2          # Data loading and manipulation
+numpy==1.26.4          # Numerical computations and array operations
+scikit-learn==1.6.0    # Preprocessing, pipelines, ML utilities
+xgboost==2.1.4         # Gradient boosting model used for training
+joblib==1.5.1          # Saving and loading trained models
+mlflow==3.0.1          # Experiment tracking and model logging
+streamlit==1.36.0      # Web app framework for model deployment
+pyyaml==6.0.1          # YAML parsing (useful for configs)
+pyngrok==7.1.2         # Expose MLflow UI via secure public tunnel
